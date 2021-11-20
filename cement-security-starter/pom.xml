@@ -11,5 +11,13 @@
 
     <artifactId>cement-security-starter</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.frontegg.sdk.spring</groupId>
+            <artifactId>spring-autoconfigure</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
