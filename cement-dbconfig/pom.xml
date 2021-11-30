@@ -9,15 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cement-security-starter</artifactId>
+    <artifactId>cement-dbconfig</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>cement-dbconfig-sample</module>
+    </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.frontegg.sdk.spring</groupId>
-            <artifactId>spring-autoconfigure</artifactId>
-            <version>0.0.6</version>
-        </dependency>
-    </dependencies>
-
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
 
 </project>
