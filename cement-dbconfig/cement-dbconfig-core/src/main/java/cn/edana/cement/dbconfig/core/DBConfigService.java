@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -17,11 +18,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DBConfigService implements ConfigService {
     private DataSource dataSource;
     private String selectSQL;
+
+    private final ScheduledExecutorService executor;
+
+    private Map<String, Object> cacheSource;
+
+    private List<ConfigListener> listeners = new ArrayList<>();
 
 
     public DBConfigService(DBConfigProperties properties) {
@@ -33,6 +44,35 @@ public class DBConfigService implements ConfigService {
                 .driverClassName(properties.getDriverClassName())
                 .build();
         this.selectSQL = properties.getSql();
+        this.executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setName(this.getClass().getName());
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        this.executor.scheduleWithFixedDelay(() -> {
+            try {
+                DBConfigService.this.checkConfigInfo();
+            } catch (Throwable e) {
+                log.error("db config rotate check error", e);
+            }
+        }, 1L, 10L, TimeUnit.SECONDS);
+    }
+
+    public void checkConfigInfo() {
+        Map<String, Object> source = getSource();
+        if (!CollectionUtils.isEmpty(source) && !source.equals(cacheSource)) {
+            this.listeners.forEach(ConfigListener::onConfigChanged);
+            // TODO: register listeners & notify listeners
+//            this.applicationContext.publishEvent(new RefreshEvent(this, (Object) null, "Refresh Nacos config"));
+            this.cacheSource = source;
+            log.info("Refresh DB Config");
+        }
+
     }
 
     @SneakyThrows
@@ -61,6 +101,26 @@ public class DBConfigService implements ConfigService {
         return result;
     }
 
+    @Override
+    public void addListener(ConfigListener listener) {
+        if (this.listeners.contains(listener)) {
+            return;
+        }
+        synchronized (this) {
+            if (this.listeners.contains(listener)) {
+                return;
+            }
+            this.listeners.add(listener);
+        }
+    }
+
+    @Override
+    public void removeListener(ConfigListener listener) {
+        synchronized (this) {
+            this.listeners.remove(listener);
+        }
+    }
+
     protected void parseJson(String prefix, Map<String, Object> result, Object object) {
         if (object == null) {
             return;
@@ -69,7 +129,7 @@ public class DBConfigService implements ConfigService {
 //            result.put(prefix, object);
 //            return;
 //        }
-        if (object instanceof String || object instanceof Boolean ||  Number.class.isAssignableFrom(object.getClass())) {
+        if (object instanceof String || object instanceof Boolean || Number.class.isAssignableFrom(object.getClass())) {
             result.put(prefix, object);
             return;
         }

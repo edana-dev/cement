@@ -30,6 +30,8 @@ public class DBConfigPropertySourceLocator implements PropertySourceLocator {
             return null;
         }
 
-        return new MapPropertySource(DB_CONFIG_PROPERTY_SOURCE_NAME, configService.getSource());
+        MapPropertySource mapPropertySource = new MapPropertySource(DB_CONFIG_PROPERTY_SOURCE_NAME, configService.getSource());
+        log.info("Located property source: {}", DB_CONFIG_PROPERTY_SOURCE_NAME);
+        return mapPropertySource;
     }
 }

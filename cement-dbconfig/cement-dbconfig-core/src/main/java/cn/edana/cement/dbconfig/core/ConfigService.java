@@ -9,4 +9,9 @@ public interface ConfigService {
      * @return
      */
     Map<String, Object> getSource();
+
+    void addListener(ConfigListener listener);
+
+    void removeListener(ConfigListener listener);
+
 }
