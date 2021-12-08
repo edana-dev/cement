@@ -1,0 +1,4 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+    cn.edana.cement.dbconfig.boot.DBConfigAutoConfiguration
+#org.springframework.boot.env.EnvironmentPostProcessor=\
+#  cn.edana.cement.dbconfig.core.DBConfigEnvironmentPostProcessor

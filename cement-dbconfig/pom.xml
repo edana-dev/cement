@@ -13,11 +13,13 @@
     <packaging>pom</packaging>
     <modules>
         <module>cement-dbconfig-sample</module>
+        <module>cement-dbconfig-boot-starter</module>
+        <module>cement-dbconfig-core</module>
     </modules>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
 </project>
