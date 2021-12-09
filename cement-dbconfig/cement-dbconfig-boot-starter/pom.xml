@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cement-dbconfig</artifactId>
-        <groupId>cn.edana.cement</groupId>
+        <groupId>com.maneki.cement</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.edana.cement</groupId>
+            <groupId>com.maneki.cement</groupId>
             <artifactId>cement-dbconfig-core</artifactId>
             <version>${project.version}</version>
         </dependency>

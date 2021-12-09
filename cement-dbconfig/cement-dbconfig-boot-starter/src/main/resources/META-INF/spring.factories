@@ -1,6 +1,4 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-    cn.edana.cement.dbconfig.boot.DBConfigBootstrapConfiguration
+    com.maneki.cement.dbconfig.boot.DBConfigBootstrapConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    cn.edana.cement.dbconfig.boot.DBConfigAutoConfiguration
-#org.springframework.boot.env.EnvironmentPostProcessor=\
-#  cn.edana.cement.dbconfig.core.DBConfigEnvironmentPostProcessor
+    com.maneki.cement.dbconfig.boot.DBConfigAutoConfiguration
