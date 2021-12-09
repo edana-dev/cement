@@ -1,4 +1,0 @@
-org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-    com.maneki.cement.dbconfig.boot.DBConfigBootstrapConfiguration
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.maneki.cement.dbconfig.boot.DBConfigAutoConfiguration

@@ -10,7 +10,7 @@
     <version>0.1-SNAPSHOT</version>
     <modules>
         <module>cement-security</module>
-        <module>cement-dbconfig</module>
+        <module>cement-config</module>
     </modules>
 
     <parent>
