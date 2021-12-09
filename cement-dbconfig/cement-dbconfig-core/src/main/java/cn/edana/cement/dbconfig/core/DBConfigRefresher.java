@@ -50,9 +50,4 @@ public class DBConfigRefresher implements ApplicationListener<ApplicationReadyEv
         });
         this.configService.addListener(listener);
     }
-
-    @EventListener
-    public void handleRefreshEvent(RefreshEvent event) {
-        log.info("refresh event");
-    }
 }
