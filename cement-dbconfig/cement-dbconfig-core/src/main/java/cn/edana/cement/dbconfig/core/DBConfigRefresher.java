@@ -9,6 +9,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -18,6 +20,7 @@ public class DBConfigRefresher implements ApplicationListener<ApplicationReadyEv
     private ConfigService configService;
 
     private AtomicBoolean ready = new AtomicBoolean(false);
+    private Map<String, ConfigListener> listenerMap = new ConcurrentHashMap(16);
 
     public DBConfigRefresher(DBConfigManager manager) {
         this.configService = manager.getConfigService();
@@ -37,11 +40,14 @@ public class DBConfigRefresher implements ApplicationListener<ApplicationReadyEv
     }
 
     private void registerDBConfigListener() {
-        ConfigListener listener = () -> {
-            DBConfigRefresher.this.applicationContext.publishEvent(
-                    new RefreshEvent(this, null, "Refresh DB config"));
-            log.info("DB Config refresh");
-        };
+        ConfigListener listener = this.listenerMap.computeIfAbsent("default", (l) -> new ConfigListener() {
+            @Override
+            public void onConfigChanged() {
+                DBConfigRefresher.this.applicationContext.publishEvent(
+                        new RefreshEvent(this, null, "Refresh DB config"));
+                log.info("DB Config refresh: {}", l);
+            }
+        });
         this.configService.addListener(listener);
     }
 

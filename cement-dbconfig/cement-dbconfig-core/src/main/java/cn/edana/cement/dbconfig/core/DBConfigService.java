@@ -25,12 +25,16 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DBConfigService implements ConfigService {
+
+    public static final long DEFAULT_CACHE_MILLS = 10_000L;
+
     private DataSource dataSource;
     private String selectSQL;
 
     private final ScheduledExecutorService executor;
 
     private Map<String, Object> cacheSource;
+    private Long cacheTimestamp = 0L;
 
     private List<ConfigListener> listeners = new ArrayList<>();
 
@@ -64,12 +68,10 @@ public class DBConfigService implements ConfigService {
     }
 
     public void checkConfigInfo() {
-        Map<String, Object> source = getSource();
+        Map<String, Object> source = doGetSource();
         if (!CollectionUtils.isEmpty(source) && !source.equals(cacheSource)) {
             this.listeners.forEach(ConfigListener::onConfigChanged);
-            // TODO: register listeners & notify listeners
-//            this.applicationContext.publishEvent(new RefreshEvent(this, (Object) null, "Refresh Nacos config"));
-            this.cacheSource = source;
+            cacheSource(source);
             log.info("Refresh DB Config");
         }
 
@@ -78,6 +80,21 @@ public class DBConfigService implements ConfigService {
     @SneakyThrows
     @Override
     public Map<String, Object> getSource() {
+        if (this.cacheSource != null && System.currentTimeMillis() - cacheTimestamp < DEFAULT_CACHE_MILLS) {
+            return this.cacheSource;
+        }
+
+        Map<String, Object> source = doGetSource();
+        cacheSource(source);
+        return source;
+    }
+
+    private void cacheSource(Map<String, Object> source) {
+        this.cacheSource = source;
+        this.cacheTimestamp = System.currentTimeMillis();
+    }
+
+    private Map<String, Object> doGetSource() {
         List<PropertyItem> items = getPropertyItems();
         Map<String, Object> result = new HashMap<>();
         for (PropertyItem item : items) {
@@ -154,6 +171,7 @@ public class DBConfigService implements ConfigService {
     }
 
     protected List<PropertyItem> getPropertyItems() {
+        log.debug("Fetching property items from database...");
         List<PropertyItem> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;

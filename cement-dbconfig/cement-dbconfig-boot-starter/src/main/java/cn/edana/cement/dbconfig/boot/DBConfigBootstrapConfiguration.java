@@ -15,9 +15,15 @@ import org.springframework.context.annotation.Configuration;
         name = {"spring.cloud.db.config.enabled"},
         matchIfMissing = true
 )
-public class DBConfigAutoConfiguration {
+public class DBConfigBootstrapConfiguration {
+
     @Bean
-    public DBConfigRefresher dbConfigRefresher(DBConfigManager dbConfigManager) {
-        return new DBConfigRefresher(dbConfigManager);
+    public DBConfigManager dbConfigManager(DBConfigProperties properties) {
+        return new DBConfigManager(properties);
+    }
+
+    @Bean
+    public DBConfigPropertySourceLocator samplePropertySourceLocator(DBConfigManager dbConfigManager) {
+        return new DBConfigPropertySourceLocator(dbConfigManager);
     }
 }
