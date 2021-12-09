@@ -2,7 +2,6 @@ package cn.edana.cement.dbconfig.sample;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationContext;

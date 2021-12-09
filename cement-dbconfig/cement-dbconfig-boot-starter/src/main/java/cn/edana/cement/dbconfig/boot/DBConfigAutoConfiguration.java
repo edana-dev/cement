@@ -2,7 +2,6 @@ package cn.edana.cement.dbconfig.boot;
 
 import cn.edana.cement.dbconfig.core.DBConfigManager;
 import cn.edana.cement.dbconfig.core.DBConfigProperties;
-import cn.edana.cement.dbconfig.core.DBConfigPropertySourceLocator;
 import cn.edana.cement.dbconfig.core.DBConfigRefresher;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
