@@ -28,8 +28,9 @@ public class DBConfigService implements ConfigService {
 
     public static final long DEFAULT_CACHE_MILLS = 10_000L;
 
+    private ConfigProperties properties;
+
     private DataSource dataSource;
-    private String selectSQL;
 
     private final ScheduledExecutorService executor;
 
@@ -39,15 +40,10 @@ public class DBConfigService implements ConfigService {
     private List<ConfigListener> listeners = new ArrayList<>();
 
 
+
     public DBConfigService(ConfigProperties properties) {
-        this.dataSource = DataSourceBuilder
-                .create()
-                .username(properties.getUsername())
-                .password(properties.getPassword())
-                .url(properties.getUrl())
-                .driverClassName(properties.getDriverClassName())
-                .build();
-        this.selectSQL = properties.getSql();
+        this.properties = properties;
+
         this.executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
@@ -177,8 +173,14 @@ public class DBConfigService implements ConfigService {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = this.dataSource.getConnection();
-            statement = connection.prepareStatement(selectSQL);
+
+            DataSource dataSource = getDataSource();
+            if (dataSource == null) {
+                log.warn("skip getting config from database, since datasource is not init");
+                return result;
+            }
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(properties.getSql());
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 PropertyItem item = new PropertyItem();
@@ -187,8 +189,8 @@ public class DBConfigService implements ConfigService {
                 item.setValue(resultSet.getString("value"));
                 result.add(item);
             }
-        } catch (SQLException e) {
-            throw new ConfigException("执行SQL失败", e);
+        } catch (Exception e) {
+            log.warn("执行SQL失败: {}", e.getMessage());
         } finally {
             try {
                 if (resultSet != null) {
@@ -207,5 +209,27 @@ public class DBConfigService implements ConfigService {
         return result;
     }
 
+    protected DataSource getDataSource() {
+        if (dataSource != null) {
+            return dataSource;
+        }
+        synchronized (this) {
+            if (dataSource != null) {
+                return dataSource;
+            }
+            try {
+                this.dataSource = DataSourceBuilder
+                        .create()
+                        .username(properties.getUsername())
+                        .password(properties.getPassword())
+                        .url(properties.getUrl())
+                        .driverClassName(properties.getDriverClassName())
+                        .build();
+            } catch (Exception e) {
+                log.warn("初始化数据源失败：{}", e.getMessage());
+            }
+        }
+        return dataSource;
+    }
 
 }
