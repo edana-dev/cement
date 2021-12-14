@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ConfigProperties.class)
 @ConditionalOnProperty(
-        name = {"spring.cloud.db.config.enabled"},
+        name = {"spring.cloud.cement.config.enabled"},
         matchIfMissing = true
 )
 public class DBConfigAutoConfiguration {
