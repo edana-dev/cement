@@ -100,7 +100,7 @@ public class DBConfigService implements ConfigService {
         for (PropertyItem item : items) {
             switch (item.getType()) {
                 case "json":
-                    parseJson("", result, JSON.parse(item.getValue()));
+                    parseJson(item.getName(), result, JSON.parse(item.getValue()));
                     break;
                 case "string":
                     result.put(item.getName(), item.getValue());

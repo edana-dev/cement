@@ -40,28 +40,66 @@ public class ConfigProperties {
     }
 
     private void overrideFromEnv() {
-        if (StringUtils.isEmpty(this.getUrl())) {
-            this.setUrl(environment
-                    .resolvePlaceholders("${spring.cloud.db.config.url:}"));
-        }
-        if (StringUtils.isEmpty(this.getUsername())) {
-            this.setUsername(
-                    environment.resolvePlaceholders("${spring.cloud.db.config.username:}"));
-        }
-        if (StringUtils.isEmpty(this.getPassword())) {
-            this.setPassword(
-                    environment.resolvePlaceholders("${spring.cloud.db.config.password:}"));
-        }
-        if (StringUtils.isEmpty(this.getDriverClassName())) {
-            this.setDriverClassName(
-                    environment.resolvePlaceholders("${spring.cloud.db.config.driver-class-name:}"));
-        }
+        overrideDBUrl();
+        overrideUsername();
+        overridePassword();
+        overrideDriverClassName();
+        overrideSQL();
+    }
+
+    private void overrideSQL() {
         if (StringUtils.isEmpty(this.getSql())) {
             String sql = environment.resolvePlaceholders("${spring.cloud.db.config.sql:}");
             if (StringUtils.isEmpty(sql)) {
                 sql = DEFAULT_SQL;
             }
             this.setSql(sql);
+        }
+    }
+
+    private void overrideDriverClassName() {
+        if (StringUtils.isEmpty(this.getDriverClassName())) {
+            this.setDriverClassName(
+                    environment.resolvePlaceholders("${spring.cloud.db.config.driver-class-name:}"));
+        }
+        if (StringUtils.isEmpty(this.getDriverClassName())) {
+            this.setDriverClassName("${spring.datasource.driver-class-name:}");
+        }
+
+    }
+
+    private void overridePassword() {
+        if (StringUtils.isEmpty(this.getPassword())) {
+            this.setPassword(
+                    environment.resolvePlaceholders("${spring.cloud.db.config.password:}"));
+        }
+        if (StringUtils.isEmpty(this.getPassword())) {
+            this.setPassword(
+                    environment.resolvePlaceholders("${spring.datasource.password:}"));
+
+        }
+    }
+
+    private void overrideUsername() {
+        if (StringUtils.isEmpty(this.getUsername())) {
+            this.setUsername(
+                    environment.resolvePlaceholders("${spring.cloud.db.config.username:}"));
+        }
+        if (StringUtils.isEmpty(this.getUsername())) {
+            this.setUsername(
+                    environment.resolvePlaceholders("${spring.datasource.username:}"));
+
+        }
+    }
+
+    private void overrideDBUrl() {
+        if (StringUtils.isEmpty(this.getUrl())) {
+            this.setUrl(environment
+                    .resolvePlaceholders("${spring.cloud.db.config.url:}"));
+        }
+        if (StringUtils.isEmpty(this.getUrl())) {
+            this.setUrl(environment
+                    .resolvePlaceholders("${spring.datasource.url:}"));
         }
     }
 }
