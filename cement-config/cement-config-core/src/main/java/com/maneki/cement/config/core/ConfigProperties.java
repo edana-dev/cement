@@ -49,7 +49,7 @@ public class ConfigProperties {
 
     private void overrideSQL() {
         if (StringUtils.isEmpty(this.getSql())) {
-            String sql = environment.resolvePlaceholders("${spring.cloud.db.config.sql:}");
+            String sql = environment.resolvePlaceholders("${spring.cloud.cement.config.sql:}");
             if (StringUtils.isEmpty(sql)) {
                 sql = DEFAULT_SQL;
             }
@@ -63,7 +63,8 @@ public class ConfigProperties {
                     environment.resolvePlaceholders("${spring.cloud.db.config.driver-class-name:}"));
         }
         if (StringUtils.isEmpty(this.getDriverClassName())) {
-            this.setDriverClassName("${spring.datasource.driver-class-name:}");
+            this.setDriverClassName(
+                    environment.resolvePlaceholders("${spring.datasource.driver-class-name:}"));
         }
 
     }
