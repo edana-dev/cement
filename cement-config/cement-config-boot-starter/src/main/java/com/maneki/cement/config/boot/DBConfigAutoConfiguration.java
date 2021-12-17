@@ -5,7 +5,7 @@ import com.maneki.cement.config.core.ConfigManager;
 import com.maneki.cement.config.core.ConfigProperties;
 import com.maneki.cement.config.core.ConfigRefresher;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
-import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +23,9 @@ public class DBConfigAutoConfiguration {
         return new ConfigRefresher(configManager);
     }
 
-    @Bean(value = "cement-config-helath")
-    @ConditionalOnEnabledHealthIndicator("nacos-config")
+    @Bean
+    @ConditionalOnMissingBean(ConfigHealthIndicator.class)
+    @ConditionalOnEnabledHealthIndicator("cement-config")
     public ConfigHealthIndicator dataSourceHealthIndicator(ConfigManager configManager) {
         return new ConfigHealthIndicator(configManager, "select 1");
     }
