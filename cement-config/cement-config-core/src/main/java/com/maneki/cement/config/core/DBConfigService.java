@@ -209,7 +209,7 @@ public class DBConfigService implements ConfigService {
         return result;
     }
 
-    protected DataSource getDataSource() {
+    public DataSource getDataSource() {
         if (dataSource != null) {
             return dataSource;
         }

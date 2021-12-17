@@ -1,5 +1,6 @@
 package com.maneki.cement.config.core;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 public interface ConfigService {
@@ -14,4 +15,5 @@ public interface ConfigService {
 
     void removeListener(ConfigListener listener);
 
+    DataSource getDataSource();
 }
