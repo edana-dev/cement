@@ -7,7 +7,7 @@
     <groupId>com.maneki.cement</groupId>
     <artifactId>cement</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <modules>
         <module>cement-security</module>
         <module>cement-config</module>

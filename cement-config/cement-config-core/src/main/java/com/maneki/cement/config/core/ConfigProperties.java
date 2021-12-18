@@ -32,7 +32,7 @@ public class ConfigProperties {
     private String username;
     private String password;
     private String driverClassName;
-    private String sql;
+    private String sql = DEFAULT_SQL;
 
     @PostConstruct
     public void init() {
